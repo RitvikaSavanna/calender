@@ -17,15 +17,30 @@ body {
     width: 450px;
     background: #fff;
 }
-.wrapper header{
+.wrapper header {
     display: flex;
     align-items: center;
     padding: 25px 30px 10px;
     justify-content: space-between;
 }
-header .current.date{
+header .current-date {
     font-size: 1.45rem;
     font-weight: 500;
+
+}
+header .current.date {
+    font-size: 1.45rem;
+    font-weight: 500;
+}
+header .icons i {
+    height: 38px;
+    width: 38px;
+    margin: 0 1px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+    background: #f2f2f2;
 }
 .calender ul {
     display: flex;
