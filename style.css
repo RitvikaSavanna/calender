@@ -42,8 +42,26 @@ header .icons i {
     border-radius: 50%;
     background: #f2f2f2;
 }
+header .icons i:last-child {
+    margin-right: -10px;
+
+}
 .calender ul {
     display: flex;
     list-style: none;
     flex-wrap: wrap;
+    text-align: center;
+}
+.calender .days {
+    margin-bottom: 20px;
+}
+.calender.week li {
+    font-weight:500 ;
+}
+.calender .days li{
+    cursor: pointer;
+    margin-top: 30px;
+}
+.calender ul li{
+    width: calc(100%/7);
 }
