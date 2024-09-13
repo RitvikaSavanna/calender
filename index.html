@@ -1,29 +1,86 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translucent Navbar</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Theatrical Canvas Design</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <header id="navbar">
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <!-- Content goes here -->
-        <div style="height: 2000px;">
-            Scroll down to see the effect.
-        </div>
-    </main>
-    <script src="script.js"></script>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let angle = 0;
+        const maskSize = 30;
+        const curtainWidth = 50;
+
+        function drawMask(x, y) {
+            ctx.fillStyle = 'gold';
+            ctx.beginPath();
+            ctx.moveTo(x, y - maskSize);
+            ctx.lineTo(x - maskSize, y);
+            ctx.lineTo(x + maskSize, y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+        }
+
+        function drawCurtains() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, curtainWidth, canvas.height);
+            ctx.fillRect(canvas.width - curtainWidth, 0, curtainWidth, canvas.height);
+        }
+
+        function drawSpotlight() {
+            const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 50, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+            gradient.addColorStop(0, 'rgba(255, 255, 0, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw curtains
+            drawCurtains();
+
+            // Draw spotlight
+            drawSpotlight();
+
+            // Draw masks in a grid pattern
+            const rows = Math.floor(canvas.height / maskSize);
+            const cols = Math.floor(canvas.width / maskSize);
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const x = j * maskSize + maskSize / 2;
+                    const y = i * maskSize + maskSize / 2;
+                    drawMask(x, y);
+                }
+            }
+
+            angle += 0.5; // Increment angle for rotation
+            requestAnimationFrame(draw); // Call draw function on the next frame
+        }
+
+        draw(); // Start the animation
+    </script>
 </body>
 </html>
