@@ -1,4 +1,5 @@
 var canvas=documentquerySelector('canvas');
+var c=canvas.getContext('2d')
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 var x=Math.random()*innerWidth;
@@ -8,9 +9,10 @@ var dy=4;
 var radius=30;
 function animate() {
     requestAnimationFrame(animate);
-    c.clearect(0,0,innerWidth,innerHeight);
+    c.clearRect(0,0,innerWidth,innerHeight);
     c.beginPath();
     c.arc(x,y,radius,0,Math.pi*2,false);
+    c.strokeStyle='red';
     c.stroke();
     if (x+radius>innerWidth|| x-radius<0){
         dx=-dx
@@ -18,5 +20,5 @@ function animate() {
     if (y+radius>innerHeight|| y-radius<0){
         dy=-dy
     }
-
+animate()
 }
