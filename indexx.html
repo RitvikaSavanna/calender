@@ -1,26 +1,169 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>circle moving</title>
+    <title>Canvas with Animated Figures</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #4cc4f4;
+            background-color: #111;
+            color: white;
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 50vh;
-            background-color: #286d5e;
+            height: 100vh;
+            background-color: #222;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button, input {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover, input:hover {
+            background-color: #555;
+        }
+        label {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <canvas></canvas>
-    <script scr="script.js"></script>
+    <div id="controls">
+        <label for="speed">Speed:</label>
+        <input type="range" id="speed" min="0" max="20" value="10">
+        <button id="addFigure">Add Figure</button>
+        <button id="removeFigure">Remove Figure</button>
+        <button id="reset">Reset Figures</button>
+    </div>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const speedControl = document.getElementById('speed');
+        const addFigureButton = document.getElementById('addFigure');
+        const removeFigureButton = document.getElementById('removeFigure');
+        const resetButton = document.getElementById('reset');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const figures = [];
+        const maxFigures = 20;
+        const numFigures = 10;
+
+        function createFigure() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * (canvas.height - 50) + 50,
+                action: Math.floor(Math.random() * 3),
+                phase: Math.random() * Math.PI * 2,
+                color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+                size: Math.random() * 10 + 10
+            };
+        }
+
+        function initFigures() {
+            figures.length = 0; // Clear existing figures
+            for (let i = 0; i < numFigures; i++) {
+                figures.push(createFigure());
+            }
+        }
+
+        initFigures();
+
+        function drawStickFigure(x, y, action, phase, color, size) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+
+            // Draw head
+            ctx.beginPath();
+            ctx.arc(x, y - size * 2, size, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Draw body
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x, y + size);
+            ctx.stroke();
+
+            // Draw arms
+            ctx.beginPath();
+            const armSwing = 15 * Math.sin(phase);
+            if (action === 0) { // Dancing
+                ctx.moveTo(x - size * 1.5 - armSwing, y - size);
+                ctx.lineTo(x + size * 1.5 + armSwing, y - size);
+            } else if (action === 2) { // Waving
+                ctx.moveTo(x - size * 1.5 - armSwing, y - size / 2);
+                ctx.lineTo(x + size * 1.5 + armSwing, y - size / 2);
+                ctx.moveTo(x + size * 1.5 + armSwing, y - size / 2);
+                ctx.lineTo(x + size * 2 * Math.sin(phase), y - size * 1.5);
+            } else { // Jumping
+                ctx.moveTo(x - size * 1.5 - armSwing, y - size);
+                ctx.lineTo(x + size * 1.5 + armSwing, y - size);
+            }
+            ctx.stroke();
+
+            // Draw legs
+            ctx.beginPath();
+            ctx.moveTo(x, y + size);
+            ctx.lineTo(x - size, y + size * 3);
+            ctx.moveTo(x, y + size);
+            ctx.lineTo(x + size, y + size * 3);
+            ctx.stroke();
+        }
+
+        let animationSpeed = 0.1;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            figures.forEach(figure => {
+                drawStickFigure(figure.x, figure.y, figure.action, figure.phase, figure.color, figure.size);
+                figure.phase += animationSpeed;
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        speedControl.addEventListener('input', function() {
+            animationSpeed = parseFloat(speedControl.value) / 100;
+        });
+
+        addFigureButton.addEventListener('click', function() {
+            if (figures.length < maxFigures) {
+                figures.push(createFigure());
+            }
+        });
+
+        removeFigureButton.addEventListener('click', function() {
+            if (figures.length > 0) {
+                figures.pop();
+            }
+        });
+
+        resetButton.addEventListener('click', function() {
+            initFigures();
+        });
+
+        draw();
+    </script>
 </body>
+</html>
